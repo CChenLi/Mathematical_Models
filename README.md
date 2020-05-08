@@ -10,6 +10,7 @@ You are suggested to have some basic math background before start this project. 
 * Recurrence relation
 * Calculus
 * Proobability theory
+* Stocastic process
 
 
 ### An example on Modeling Cov-19 with SIR model
