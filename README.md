@@ -15,8 +15,9 @@ You are suggested to have some basic math background before start this project. 
 ### An example on Modeling Cov-19 with SIR model
 
 The following code is a SIR mathematical model that fitted the first 14 days of Cov-19 spreading data in U.S. 
-from Center for Disease Control and Prevention.
-The code is based on R. Default assumption is enforce Social distancing policy 10 days after outbreak.
+from Center for Disease Control and Prevention. 
+The code is based on R. 
+Default assumption is enforce Social distancing policy 10 days after outbreak.
 Explaination of parameters are in comment, feel free to adjust these parameters and check how these parameter
 affect feature of spreading.
 
