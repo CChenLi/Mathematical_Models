@@ -1,0 +1,2 @@
+"0","data <- read.table(""31395.txt"", header = TRUE)"
+"0","plot(data, main=""Yeast Cell Number against Time in Carlson's Experiment"", ylab=""Amount Million/mL"")"

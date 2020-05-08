@@ -1,0 +1,6 @@
+"0","for (i in c(10, 18)) {"
+"0","  exponential.model <- lm(log(Amount) ~ Hours, data = data[1:i,])"
+"0","  timevalues <- seq(0, 18, by=0.1)"
+"0","  Counts.exponential2 <- exp(predict(exponential.model,list(Hours=timevalues)))"
+"0","  lines(timevalues, Counts.exponential2,lty=2,col=(i%/%3))"
+"0","}"

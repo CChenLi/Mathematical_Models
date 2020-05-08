@@ -1,0 +1,1 @@
+"0","legend(""topleft"", inset = 0.01, cex = 0.7 ,c(""Exponential Fit for first 9 hours"", ""Exponential Fit for the whole data""), lty=2,col=c(3, 6))"

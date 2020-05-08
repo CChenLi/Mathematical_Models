@@ -1,0 +1,235 @@
+---
+title: "Math 142 Homework1"
+author: "Chen Li -- 705426669"
+date: "4/6/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 1
+
+(a)   
+$N_{k+1} =  N_{k}  + \#KakapoBorn - \#KakapoCaptured + \#KakapoReintroduced - \#KakapoKilled$
+
+(b)  
+$\text{NBlood}_{t} = \text{NBlood}_{t-1} + \text{AmongAbsorbedFromGut}_{t-1} - \text{AmongtAbsorbedIntoTissue}_{t-1} - \text{AmountFilteredByKidneys}_{t-1} + \text{AmountReabsorbed}_{t-1}$
+
+## Problem 2
+
+### (a) Derive model one
+  * **(i)** The number of Female is half of the population, $Female =  0.5 * N_{k}$. Since A female lays one egg every four year. The expected Amount of female give birth in year k is a quarter of number of females, so $\text{Birth}_{k} = \frac{1}{4} \times \text{Female}_{k}$. And only 29% of new born can survive to year k+1. So the new born in year k+1 is, 
+$\text{Newborn}_{k} = 0.29 \times \text{Birth}_{k}$. Put togather, $$Newborn_{k} = 0.29 * 0.25 * 0.5 * N_{k} = 0.03625 * N_{k}$$
+  * **(ii)** Based on the information, one-fiftyth of the population would die every year. 
+  $$Death_{k} = 0.02 * N_{k} $$
+  * **(iii)** Assume that the starting population size on this island is 50 birds 
+```{r}
+#Define the function to stimulate recurrence.
+N_nextyear <- function (N_thisyear, birthrate = 0.25, surrate = 0.29) {
+  N_thisyear + surrate * birthrate * 0.5 * N_thisyear - 0.02 * N_thisyear
+}
+
+#Run stimulation
+N <- 50
+PopulationArray <- rbind(0:5 ,rep(50, 6))
+for (i in 2:6) {
+  PopulationArray[2, i] <- N_nextyear(PopulationArray[2, i-1])
+}
+apply(PopulationArray, 2, function(x) {
+  (paste("The population in year", x[1], "is", x[2]))
+})
+```
+  * **(iv)** Mathmatically, we realize the recurrence can be reduce to $N_{k} = 1.01625^{k} \times 50$, which is exponential explode to $\inf$. So we can simple solve $1.01625^{k} \times 50 = 100$, solution is `r log(2, base = 1.01625)` years round up. And $1.01625^{k} \times 50 = 200$, solution is `r log(4, base = 1.01625)` years round up
+
+### (b) Comparing two strategeis
+
+* **(i) Strategy 1** changes birth rate and affect Newborn. $\text{Newborn}_{k} = 0.29 \times \frac{1}{3} \times 0.5 \times N_{k} = 0.0483 \times N_{k}$, and $$N_{k+1} = N_{k} + 0.0483 \times N_{k} - 0.02 \times N_{k} = 1.0283 \times N_{k}$$
+Simply change the parameter birthrate in N_nextyear. Run the same stimulation. echo = FALSE
+```{r, echo=FALSE}
+N <- 50
+PopulationArray <- rbind(0:5 ,rep(50, 6))
+for (i in 2:6) {
+  PopulationArray[2, i] <- N_nextyear(PopulationArray[2, i-1], birthrate = 1/3)
+}
+apply(PopulationArray, 2, function(x) {
+  (paste("The population in year", x[1], "is", x[2]))
+})
+```
+
+* **(ii) Strategy 2** changes survive rate and affect Newborn. $\text{Newborn}_{k} = 0.5 \times \frac{1}{4} \times 0.5 \times N_{k} = 0.0625 \times N_{k}$, and $$N_{k+1} = N_{k} + 0.0625 \times N_{k} - 0.02 \times N_{k} = 1.0425 \times N_{k}$$
+Simply change the parameter surrate in N_nextyear. Run the same stimulation. echo = FALSE
+```{r, echo=FALSE}
+N <- 50
+PopulationArray <- rbind(0:5 ,rep(50, 6))
+for (i in 2:6) {
+  PopulationArray[2, i] <- N_nextyear(PopulationArray[2, i-1], surrate = 0.5)
+}
+apply(PopulationArray, 2, function(x) {
+  (paste("The population in year", x[1], "is", x[2]))
+})
+```
+
+* **(iii)** Obsivously, they are both exponential growth and $1.0425 > 1.0283$, so **Strategy 2** gives the biggest increase.
+
+## Problem 3
+
+### (a)
+Start from the equation:$N(t+\Delta t) = N(t) + \Delta t (b-m)N(t)$, if we can find the value of birth rate, I can estimate mortality rate. Or if we can find out the distribution of life span, such as average, or pmf, we can infer motality rate.  
+Moreover, it's likely that in the early hours, the change rate is dominated by birth rate, and death rate play in a role in later hours. So we can estimate the birth rate with data from first few hours and calculate coresponding death rate with data in later hours.
+
+### (b)
+
+```{r}
+data <- read.table("31395.txt", header = TRUE)
+plot(data, main="Yeast Cell Number against Time in Carlson's Experiment", ylab="Amount Million/mL")
+axis(1, at = seq_along(data[[1]]))
+timevalues <- seq(0, 18, by=0.1)  
+y <- seq_along(timevalues)
+for (i in seq_along(timevalues)) {
+  y[i] <- (9.741*exp(0.530877*timevalues[i])) / (1+0.01469*exp(0.530877*timevalues[i]))
+}
+lines(timevalues, y,lty=2,col=2)
+
+```
+Logistic growth is similar to exponential growth model when N is small. Exponential growth model is valid under ideal condition where there is no enviroment adverse force. However, there is enviroment limit apply upon every system. So exponential growth would only work when population is small. On the other hand, logictic growth model consider enviroment force, and fits bitter than exponential.
+
+
+
+```{r}
+data <- read.table("31395.txt", header = TRUE)
+plot(data, main="Yeast Cell Number against Time in Carlson's Experiment", ylab="Amount Million/mL")
+axis(1, at = seq_along(data[[1]]))
+for (i in c(10, 18)) {
+  exponential.model <- lm(log(Amount) ~ Hours, data = data[1:i,])
+  timevalues <- seq(0, 18, by=0.1)
+  Counts.exponential2 <- exp(predict(exponential.model,list(Hours=timevalues)))
+  lines(timevalues, Counts.exponential2,lty=2,col=(i%/%3))
+}
+legend("topleft", inset = 0.01, cex = 0.7 ,c("Exponential Fit for first 9 hours", "Exponential Fit for the whole data"), lty=2,col=c(3, 6))
+```
+
+
+From the plot, it's obvious that the growth dose not fit exponential, but it fits well in first 9 hour when the population is relatively small. From this perspective, it is very likely that the growth was limited by enrivoment resources. The growth has limited by enviroment capacity.
+
+### (c)
+This is shown in plot above.  
+Also, we can take log to Amount and run a least square method.
+```{r}
+exponential.model <- lm(log(Amount) ~ Hours, data = data[1:10,])
+```
+
+The R Square of the model is`` `r summary(exponential.model)$r.squared` ``, fits very well
+
+### (d)
+print $\frac{N_{K+1}}{N_k}$ of first couple estimates:
+```{r}
+esp <- exp(predict(exponential.model,list(Hours=seq(5))))
+print(esp[-1] / esp[-5])
+```  
+Therefore, the lesst square model produces $\frac{N_{K+1}}{N_k} = 1.532808$, so an estimate using least square method for growth rate is $R_0 = 0.532808$
+
+## Problem 4
+### (a) 
+Consider time interval of 1 year. Population is $N_k$, where half are women, so number of Women $W_k = \frac{1}{2} \times N_k$. Each have 6 children through 35 year, so on average, every women is expected to have $\frac{6}{35}$ childrens each year. Putting togather there are $\frac{1}{2} \times N_k \times \frac{6}{35} = \frac{3}{35} \times N_k$ new born each year. Thus $b = \frac{3}{35}$
+
+### (b)
+Based on the information, the population is in exponential decay with half-life period of  35 years. Put this information into equation, we get:
+$$N_{k+35} = \frac{1}{2} \times N_k$$
+$$(1-m)^{35}N_k = \frac{1}{2} \times N_k$$
+$$m = 1 - \frac{1}{2}^{\frac{1}{35}} = 0.01960939$$
+
+### (c)
+
+* (1) This model omits the fact there are people move in and move out. We can add another term to count immigrant.
+* (2) There are some infant can't survive through first year, based on the medical condition at that time. We can add a survive rate.
+* (3) Since the United States is a new settler, the enviroment is harsh and initial population is more likely to contain more male. We need to seprate population for man and women, then find leslie matrix.
+
+### (d)
+```{r}
+population <- function (year, Ni = 4646, b = 3/35, m = 0.01960939) {
+  Ratio <- 1 + b - m
+  Ratio ^ (year - 1630) * Ni
+}
+estimate <- population(seq(1630,1680,by=1))
+realData <- c(4646, 26634, 50368, 75058, 111935, 151507)
+
+plot(seq(1630,1680,by=1), estimate, col=1, pch=2,ylim=range(realData))
+points(c(1630, 1640, 1650, 1660, 1670, 1680), realData, col=2, pch=4)
+legend("topleft", inset = 0.01, cex = 0.7 ,c("Estimate", "Real Data"), pch=c(2,4),col=c(1, 2))
+```
+
+### (e)
+```{r}
+Ratio <- 1+3/35-0.01960939
+population_next <- function(N, r, I) {
+  N * r + I
+}
+year <- seq(1630,1680,by=1)
+estimate <- matrix(0,nrow=3,ncol=length(year))
+estimate[,1] <- 4646
+plot(c(1630, 1640, 1650, 1660, 1670, 1680), realData, col=4, pch=4)
+for (i in 1:3) {
+  I <- c(200, 500, 1000)[i]
+  for (j in 2:length(year)) {
+    estimate[i, j] <- population_next(estimate[i, j-1], Ratio, I)
+  }
+  lines(seq(1630,1680,by=1), lty=2,estimate[i,], col=i, pch=2)
+}
+```  
+Seems like none fits very well.  
+1000 fits early years.  
+500 fits middle years.
+200 fits one later years.
+
+## Problem 5
+
+### (a)
+```{r}
+Ct <- function(c) {
+  (1-0.2425) * c
+}
+concentration <- rep(40,8)
+concentration[1] <- 0
+names(concentration) <- paste("C", 0:7,sep="")
+for (i in 3:8) {
+  concentration[i] <- Ct(concentration[i-1])
+}
+concentration[8] = concentration[8] + 40
+print(concentration)
+```
+
+### (b)
+When take n-th pill, time is $6 \times (n-1)$, time after take in $\text{Pill}_{n-1}$ is $6 \times 1$,
+time after $\text{Pill}_{n-2}$ is $6 \times 2$ ... time after take in $\text{Pill}_{n-k}$ is $6k$, where $k$ ranges from 1 to n.  
+The concnetration caused by 1 pill k hours after take in is $$\text{Concentration}(k) = \begin{cases}0  & k=0\\(1-0.2425)^{k-1} \times 40 & k \neq 0\end{cases}$$
+Based on this information, we get the recurrence
+$$C_{n} = (1-0.2425)^6 \cdot C_{n-1} + 40$$
+
+### (c)
+```{r}
+Ratio <- (1-0.2425)^6
+CP <- function (c) {
+  Ratio * c + 40
+}
+concentration <- rep(40, 5)
+names(concentration) <- paste("C", 1:5,sep="")
+for (i in 2:5) {
+  concentration[i] <- CP(concentration[i-1])
+}
+print(concentration)
+```
+
+### (d)
+Solve $C = (1-0.2425)^6 \cdot C + 40$, solution is `49.3174`
+
+### (e) Solve Recurrence
+* Simplify recurrence $$C_{n} - (1-0.2425)^6 \cdot C_{n-1} - 40 = 0$$
+* Solve Characteristic polynomial $$r-(1-0.2425)^6 = 0 \Rightarrow r = (1-0.2425)^6$$
+* Therefore, $$C_n = A \cdot (1-0.2425)^{6n} + C_{par}$$ where $C_{par}$ is particular solution, in this case should be an constant B. And we will solve B in next step.
+* Plug $C_{par}$ into recurrence, we get $$B = (1-0.2425)^6 \cdot B + 40 \Rightarrow B = 49.3174$$
+* Then $$C_n = A \cdot (1-0.2425)^{6n} + 49.3174$$, and slove for initial condition
+$$C_1 = 40 = A \cdot (1-0.2425)^{6} + 49.3174 \Rightarrow A = -49.3173$$
+* Which gives us $$C_n =  -49.3173 \cdot (1-0.2425)^{6n} + 49.3174$$
+* First part of this formula exponential decay to 0 and second part is constant. So $$\lim_{n\to\infty} C_n = 49.3174$$

@@ -1,0 +1,27 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1586215382021.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3781029821",
+    "id" : "E2C6BA09",
+    "lastKnownWriteTime" : 1587442490,
+    "last_content_update" : 1587442490869,
+    "path" : "~/Documents/Math142/Math_Modeling/math142hw1/Math142hw1.Rmd",
+    "project_path" : "Math142hw1.Rmd",
+    "properties" : {
+        "cursorPosition" : "95,397",
+        "last_setup_crc32" : "",
+        "scrollLine" : "95",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

@@ -1,0 +1,7 @@
+"0","timevalues <- seq(0, 18, by=0.1)  "
+"0","y <- seq_along(timevalues)"
+"0","for (i in seq_along(timevalues)) {"
+"0","  y[i] <- (9.741*exp(0.530877*timevalues[i])) / (1+0.01469*exp(0.530877*timevalues[i]))"
+"0","}"
+"0","lines(timevalues, y,lty=2,col=2)"
+"0",""
