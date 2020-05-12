@@ -1,6 +1,7 @@
 # Mathematical Modeling
 
-Mathematical examples from many areas, including population growth, epidemiology, cell biology, and traffic modeling. The models take the form of ordinary differential equations (ODEs), difference (recurrence) equations, and partial differential equations (PDEs). An example project is **Stochastic Report-signed.pdf** home directory.
+Mathematical examples from many areas, including population growth, epidemiology, cell biology, and traffic modeling. The models take the form of ordinary differential equations (ODEs), difference (recurrence) equations, and partial differential equations (PDEs). 
+An exampular project is **Stochastic Report-signed.pdf** in home directory.
 
 ## Before you start
 
