@@ -10,7 +10,7 @@ You are suggested to have some basic math background before start this project. 
 * Differential equations
 * Recurrence relation
 * Calculus
-* Proobability theory
+* Probability theory
 * Stocastic process
 
 
